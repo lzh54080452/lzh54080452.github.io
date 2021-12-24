@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SpringBoot on thinkBig Blog</title>
+    <link>https://lzh54080452.github.io/tags/springboot/</link>
+    <description>Recent content in SpringBoot on thinkBig Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 08 Dec 2021 20:53:40 +0800</lastBuildDate><atom:link href="https://lzh54080452.github.io/tags/springboot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker部署SpringBoot的jar</title>
+      <link>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2springboot%E7%9A%84jar/</link>
+      <pubDate>Wed, 08 Dec 2021 20:53:40 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2springboot%E7%9A%84jar/</guid>
+      <description>1. SpringBoot通过Maven打包成jar 部署到Docker 一、Maven执行打包命令 通常SpringBoot项目会使用 spring-boot-maven-plugin 插件 来打包项</description>
+    </item>
+    
+  </channel>
+</rss>

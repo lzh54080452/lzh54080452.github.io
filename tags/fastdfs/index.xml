@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>FastDFS on thinkBig Blog</title>
+    <link>https://lzh54080452.github.io/tags/fastdfs/</link>
+    <description>Recent content in FastDFS on thinkBig Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 13 Sep 2021 14:05:02 +0200</lastBuildDate><atom:link href="https://lzh54080452.github.io/tags/fastdfs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker部署FastDFS</title>
+      <link>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2fastdfs/</link>
+      <pubDate>Mon, 13 Sep 2021 14:05:02 +0200</pubDate>
+      
+      <guid>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2fastdfs/</guid>
+      <description>Docker 部署 FastDFS 一、docker 拉取 FastDFS 镜像 docker pull season/fastdfs:1.2 docker cmd 二、运行Tracker docker run -ti -d --name trakcer -v /opt/fastdfs/tracker_data:/fastdfs/tracker/data --net=host season/fastdfs:1.2 tracker 三、运行 Storage 注意替换{ipaddress} docker run -ti -d --name storage</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>eKuiper on thinkBig Blog</title>
+    <link>https://lzh54080452.github.io/categories/ekuiper/</link>
+    <description>Recent content in eKuiper on thinkBig Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 10 Dec 2021 23:01:48 +0800</lastBuildDate><atom:link href="https://lzh54080452.github.io/categories/ekuiper/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker部署ekuiper和ekuiper_manager</title>
+      <link>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2ekuiper%E5%92%8Cekuiper_manager/</link>
+      <pubDate>Fri, 10 Dec 2021 23:01:48 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2ekuiper%E5%92%8Cekuiper_manager/</guid>
+      <description>docker 部署 kuiper 和 kuiper-manager 1. 拉取kuiper镜像 ekuiper分为3种版本，以 1.4为例： 1.4 开发版本 有运行的一些包，还有golang的开发环境 1.4-slim 装有一些运</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='1. SpringBoot通过Maven打包成jar 部署到Docker 一、Maven执行打包命令 通常SpringBoot项目会使用 spring-boot-maven-plugin 插件 来打包项'><title>Docker部署SpringBoot的jar</title>
+
+<link rel='canonical' href='https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2springboot%E7%9A%84jar/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Docker部署SpringBoot的jar'>
+<meta property='og:description' content='1. SpringBoot通过Maven打包成jar 部署到Docker 一、Maven执行打包命令 通常SpringBoot项目会使用 spring-boot-maven-plugin 插件 来打包项'>
+<meta property='og:url' content='https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2springboot%E7%9A%84jar/'>
+<meta property='og:site_name' content='thinkBig Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='SpringBoot' /><meta property='article:tag' content='Docker' /><meta property='article:published_time' content='2021-12-08T20:53:40&#43;08:00'/><meta property='article:modified_time' content='2021-12-08T20:53:40&#43;08:00'/><meta property='og:image' content='https://lzh54080452.github.io/post/spring_boot.jpg' />
+<meta name="twitter:title" content="Docker部署SpringBoot的jar">
+<meta name="twitter:description" content="1. SpringBoot通过Maven打包成jar 部署到Docker 一、Maven执行打包命令 通常SpringBoot项目会使用 spring-boot-maven-plugin 插件 来打包项"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://lzh54080452.github.io/post/spring_boot.jpg' />
+    <link rel="shortcut icon" href="https://ftp.bmp.ovh/imgs/2021/12/e9387420470e9418.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/docker%E9%83%A8%E7%BD%B2springboot%E7%9A%84jar/">
+                
+                    <img src="/post/spring_boot.jpg" loading="lazy" alt="Featured image of post Docker部署SpringBoot的jar" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/docker/" >
+                Docker
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/docker%E9%83%A8%E7%BD%B2springboot%E7%9A%84jar/">Docker部署SpringBoot的jar</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 08, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 2 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="1--springboot通过maven打包成jar-部署到docker">1.  SpringBoot通过Maven打包成jar 部署到Docker</h2>
+<h3 id="一maven执行打包命令">一、Maven执行打包命令</h3>
+<blockquote>
+<p>通常SpringBoot项目会使用 <em><strong>spring-boot-maven-plugin</strong></em> 插件 来打包项目</p>
+</blockquote>
+<blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;build&gt;</span>
+    	<span class="c">&lt;!-- Jar包的名称 --&gt;</span>
+        <span class="nt">&lt;finalName&gt;</span>FeiGangBao<span class="nt">&lt;/finalName&gt;</span>
+        <span class="nt">&lt;plugins&gt;</span>
+            <span class="nt">&lt;plugin&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+                <span class="nt">&lt;configuration&gt;</span>
+                    <span class="c">&lt;!-- 指定该Main Class为全局的唯一入口 --&gt;</span>
+                    <span class="nt">&lt;mainClass&gt;</span>com.lizihao.FeiGangBaoApplication<span class="nt">&lt;/mainClass&gt;</span>
+                    <span class="nt">&lt;layout&gt;</span>ZIP<span class="nt">&lt;/layout&gt;</span>
+                <span class="nt">&lt;/configuration&gt;</span>
+                <span class="nt">&lt;executions&gt;</span>
+                    <span class="nt">&lt;execution&gt;</span>
+                        <span class="nt">&lt;goals&gt;</span>
+                            <span class="c">&lt;!--可以把依赖的包都打包到生成的Jar包中--&gt;</span>
+                            <span class="nt">&lt;goal&gt;</span>repackage<span class="nt">&lt;/goal&gt;</span>
+                        <span class="nt">&lt;/goals&gt;</span>
+                    <span class="nt">&lt;/execution&gt;</span>
+                <span class="nt">&lt;/executions&gt;</span>
+            <span class="nt">&lt;/plugin&gt;</span>
+        <span class="nt">&lt;/plugins&gt;</span>
+    <span class="nt">&lt;/build&gt;</span>
+</code></pre></div></blockquote>
+<blockquote>
+<p><figure 
+	>
+	<a href="/post/dockerDeploySpringBoot/maven_clean_package.png" >
+		<img src="/post/dockerDeploySpringBoot/maven_clean_package.png"
+			
+			
+			
+			loading="lazy"
+			alt="mvn package">
+	</a>
+	
+	<figcaption>mvn package</figcaption>
+	
+</figure></p>
+</blockquote>
+<h3 id="二把打包的-jar文件上传到-centos服务器上">二、把打包的 Jar文件上传到 Centos服务器上</h3>
+<blockquote>
+<p><em>步骤 略</em></p>
+</blockquote>
+<h3 id="三创建-dockerfile-文件">三、创建 dockerFile 文件</h3>
+<blockquote>
+<ol>
+<li>先使用 vim 命令 创建 dockerfile</li>
+</ol>
+</blockquote>
+<blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">vim dockerfile
+
+<span class="c1">#dockerfile内容：</span>
+FROM java:8
+MAINTAINER lizihao &lt;lizihao_email@163.com&gt;
+ADD FeiGangBao.jar /root/app.jar
+CMD java -jar /root/app.jar
+</code></pre></div></blockquote>
+<h3 id="四通过docker-build-命令构建-docker镜像">四、通过docker build 命令构建 docker镜像</h3>
+<blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#    构建命令    文件位置       镜像名称:版本号 上下文.代表当前上下文</span>
+docker build -f dockerfile -t fgb:1.3 .
+<span class="c1">#使用docker images命令查看镜像</span>
+docker images
+</code></pre></div><p><figure 
+	>
+	<a href="/post/dockerDeploySpringBoot/docker_images.png" >
+		<img src="/post/dockerDeploySpringBoot/docker_images.png"
+			
+			
+			
+			loading="lazy"
+			alt="docker_images">
+	</a>
+	
+	<figcaption>docker_images</figcaption>
+	
+</figure></p>
+</blockquote>
+<h3 id="五启动刚刚创建的-docker-镜像">五、启动刚刚创建的 docker 镜像</h3>
+<blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#--参数说明--</span>
+<span class="c1"># -id:在后台运行、-it:直接运行可以查看运行情况，退出就停止容器</span>
+<span class="c1"># -p:指定映射端口 宿主机端口:docker容器端口</span>
+<span class="c1"># --name:指定容器名称</span>
+docker run -it -p 9109:9109 --name<span class="o">=</span>fgb_provider1.3 fgb:1.3
+</code></pre></div></blockquote>
+<h2 id="2-将lib-和-jar包分开的方式部署">2. 将lib 和 jar包分开的方式部署</h2>
+<blockquote>
+<p>Why? 因为通过 <em><strong>spring-boot-maven-plugin</strong></em> 插件 来打包项目默认会将项目中的所有用到的依赖打包到 jar中，导致jar文件太大 每次部署传输慢 所以下面我们采用lib 和 jar 分开部署的方式</p>
+</blockquote>
+<blockquote>
+<h3 id="一使用分开打包方式-打包-maven项目">一、使用分开打包方式 打包 maven项目</h3>
+<blockquote>
+<ol>
+<li><strong>首先回到上面的打包位置，将下面的xml添加到 <!-- raw HTML omitted -->节点中</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;includes&gt;</span>
+      <span class="nt">&lt;include&gt;</span>
+          <span class="c">&lt;!-- 排除所有Jar --&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>nothing<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>nothing<span class="nt">&lt;/artifactId&gt;</span>
+       <span class="nt">&lt;/include&gt;</span>
+<span class="nt">&lt;/includes&gt;</span>
+</code></pre></div><p><figure 
+	>
+	<a href="/post/dockerDeploySpringBoot/pom.png" >
+		<img src="/post/dockerDeploySpringBoot/pom.png"
+			
+			
+			
+			loading="lazy"
+			alt="pom.xml">
+	</a>
+	
+	<figcaption>pom.xml</figcaption>
+	
+</figure></p>
+<ol start="2">
+<li>
+<p><strong>重新使用 package 打包成 jar</strong></p>
+</li>
+<li>
+<p><strong>将 lib 文件和 jar文件 上传到 服务器</strong></p>
+</li>
+<li>
+<p><strong>使用 vim 命令修改dockerfile文件</strong></p>
+<p><strong>修改</strong> 通过 -Dloader.path=&quot;/root/lib/&quot; 参数 指定java运行程序时从/root/lib/路径下找依赖的jar包</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">FROM java:8
+MAINTAINER lizihao &lt;lizihao_email@163.com&gt;
+ADD FeiGangBao.jar /root/app.jar
+CMD java -Dloader.path<span class="o">=</span><span class="s2">&#34;/root/lib/&#34;</span> -jar /root/app.jar
+</code></pre></div></li>
+</ol>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol start="5">
+<li>
+<p>通过dockerfile文件 构建镜像文件 不变</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#    构建命令    文件位置       镜像名称:版本号 上下文.代表当前上下文</span>
+docker build -f dockerfile -t fgb:1.3 .
+<span class="c1">#使用docker images命令查看镜像</span>
+docker images
+</code></pre></div></li>
+</ol>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<ol start="6">
+<li>
+<p>通过docker镜像 运行容器</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="c1">#--参数说明--</span>
+<span class="c1"># -id:在后台运行、-it:直接运行可以查看运行情况，退出就停止容器</span>
+<span class="c1"># -p:指定映射端口 宿主机端口:docker容器端口</span>
+<span class="c1"># -v:挂载数据卷 宿主机的文件路径:docker容器内的文件路径</span>
+<span class="c1"># --name:指定容器名称</span>
+docker run -id -p 9109:9109 -v /root/web_app/fgb/lib:/root/lib/ --name<span class="o">=</span>fgb_provider1.3 fgb:1.3
+</code></pre></div><p><figure 
+	>
+	<a href="/post/dockerDeploySpringBoot/docker_run.png" >
+		<img src="/post/dockerDeploySpringBoot/docker_run.png"
+			
+			
+			
+			loading="lazy"
+			alt="docker_run">
+	</a>
+	
+	<figcaption>docker_run</figcaption>
+	
+</figure></p>
+</li>
+</ol>
+</blockquote>
+</blockquote>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/springboot/">SpringBoot</a>
+        
+            <a href="/tags/docker/">Docker</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/docker%E7%9A%84%E4%BD%BF%E7%94%A8/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/post/docker.jpeg" loading="lazy" data-key="" data-hash="/post/docker.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Docker的使用</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/docker%E9%83%A8%E7%BD%B2fastdfs/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/post/docker.jpeg" loading="lazy" data-key="" data-hash="/post/docker.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Docker部署FastDFS</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        <head>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+</head>
+<body>
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'jhGjsLDo1scgQSGt0yekudk1-gzGzoHsz',
+            appKey: 'X35d2pn5VbzXf0V022XMK0lF'
+        })
+    </script>
+</body>
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2021 thinkBig Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#1--springboot通过maven打包成jar-部署到docker">1.  SpringBoot通过Maven打包成jar 部署到Docker</a>
+      <ol>
+        <li><a href="#一maven执行打包命令">一、Maven执行打包命令</a></li>
+        <li><a href="#二把打包的-jar文件上传到-centos服务器上">二、把打包的 Jar文件上传到 Centos服务器上</a></li>
+        <li><a href="#三创建-dockerfile-文件">三、创建 dockerFile 文件</a></li>
+        <li><a href="#四通过docker-build-命令构建-docker镜像">四、通过docker build 命令构建 docker镜像</a></li>
+        <li><a href="#五启动刚刚创建的-docker-镜像">五、启动刚刚创建的 docker 镜像</a></li>
+      </ol>
+    </li>
+    <li><a href="#2-将lib-和-jar包分开的方式部署">2. 将lib 和 jar包分开的方式部署</a>
+      <ol>
+        <li><a href="#一使用分开打包方式-打包-maven项目">一、使用分开打包方式 打包 maven项目</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

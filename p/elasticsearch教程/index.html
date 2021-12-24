@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='分布式搜索引擎01 &amp;ndash; elasticsearch基础 0.学习目标 1.初识elasticsearch 1.1.了解ES 1.1.1.elastics'><title>Elasticsearch教程</title>
+
+<link rel='canonical' href='https://lzh54080452.github.io/p/elasticsearch%E6%95%99%E7%A8%8B/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Elasticsearch教程'>
+<meta property='og:description' content='分布式搜索引擎01 &amp;ndash; elasticsearch基础 0.学习目标 1.初识elasticsearch 1.1.了解ES 1.1.1.elastics'>
+<meta property='og:url' content='https://lzh54080452.github.io/p/elasticsearch%E6%95%99%E7%A8%8B/'>
+<meta property='og:site_name' content='thinkBig Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Elasticsearch' /><meta property='article:published_time' content='2021-12-25T00:40:27&#43;08:00'/><meta property='article:modified_time' content='2021-12-25T00:40:27&#43;08:00'/><meta property='og:image' content='https://lzh54080452.github.io/post/elasticsearch.png' />
+<meta name="twitter:title" content="Elasticsearch教程">
+<meta name="twitter:description" content="分布式搜索引擎01 &amp;ndash; elasticsearch基础 0.学习目标 1.初识elasticsearch 1.1.了解ES 1.1.1.elastics"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://lzh54080452.github.io/post/elasticsearch.png' />
+    <link rel="shortcut icon" href="https://ftp.bmp.ovh/imgs/2021/12/e9387420470e9418.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/elasticsearch%E6%95%99%E7%A8%8B/">
+                
+                    <img src="/post/elasticsearch.png" loading="lazy" alt="Featured image of post Elasticsearch教程" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/elasticsearch/" >
+                Elasticsearch
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/elasticsearch%E6%95%99%E7%A8%8B/">Elasticsearch教程</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 25, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 23 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h1 id="分布式搜索引擎01">分布式搜索引擎01</h1>
+<p>&ndash; elasticsearch基础</p>
+<h1 id="0学习目标">0.学习目标</h1>
+<h1 id="1初识elasticsearch">1.初识elasticsearch</h1>
+<h2 id="11了解es">1.1.了解ES</h2>
+<h3 id="111elasticsearch的作用">1.1.1.elasticsearch的作用</h3>
+<p>elasticsearch是一款非常强大的开源搜索引擎，具备非常多强大功能，可以帮助我们从海量数据中快速找到需要的内容</p>
+<p>例如：</p>
+<ul>
+<li>
+<p>在GitHub搜索代码</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720193623245.png" >
+		<img src="/post/Elasticsearch_course/image-20210720193623245.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720193623245">
+	</a>
+	
+	<figcaption>image-20210720193623245</figcaption>
+	
+</figure></p>
+</li>
+<li>
+<p>在电商网站搜索商品</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720193633483.png" >
+		<img src="/post/Elasticsearch_course/image-20210720193633483.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720193633483">
+	</a>
+	
+	<figcaption>image-20210720193633483</figcaption>
+	
+</figure></p>
+</li>
+<li>
+<p>在百度搜索答案</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720193641907.png" >
+		<img src="/post/Elasticsearch_course/image-20210720193641907.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720193641907">
+	</a>
+	
+	<figcaption>image-20210720193641907</figcaption>
+	
+</figure></p>
+</li>
+<li>
+<p>在打车软件搜索附近的车</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720193648044.png" >
+		<img src="/post/Elasticsearch_course/image-20210720193648044.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720193648044">
+	</a>
+	
+	<figcaption>image-20210720193648044</figcaption>
+	
+</figure></p>
+</li>
+</ul>
+<h3 id="112elk技术栈">1.1.2.ELK技术栈</h3>
+<p>elasticsearch结合kibana、Logstash、Beats，也就是elastic stack（ELK）。被广泛应用在日志数据分析、实时监控等领域：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720194008781.png" >
+		<img src="/post/Elasticsearch_course/image-20210720194008781.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720194008781">
+	</a>
+	
+	<figcaption>image-20210720194008781</figcaption>
+	
+</figure></p>
+<p>而elasticsearch是elastic stack的核心，负责存储、搜索、分析数据。</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720194230265.png" >
+		<img src="/post/Elasticsearch_course/image-20210720194230265.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720194230265">
+	</a>
+	
+	<figcaption>image-20210720194230265</figcaption>
+	
+</figure></p>
+<h3 id="113elasticsearch和lucene">1.1.3.elasticsearch和lucene</h3>
+<p>elasticsearch底层是基于<strong>lucene</strong>来实现的。</p>
+<p><strong>Lucene</strong>是一个Java语言的搜索引擎类库，是Apache公司的顶级项目，由DougCutting于1999年研发。官网地址：https://lucene.apache.org/ 。</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720194547780.png" >
+		<img src="/post/Elasticsearch_course/image-20210720194547780.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720194547780">
+	</a>
+	
+	<figcaption>image-20210720194547780</figcaption>
+	
+</figure></p>
+<p><strong>elasticsearch</strong>的发展历史：</p>
+<ul>
+<li>2004年Shay Banon基于Lucene开发了Compass</li>
+<li>2010年Shay Banon 重写了Compass，取名为Elasticsearch。</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720195001221.png" >
+		<img src="/post/Elasticsearch_course/image-20210720195001221.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720195001221">
+	</a>
+	
+	<figcaption>image-20210720195001221</figcaption>
+	
+</figure></p>
+<h3 id="114为什么不是其他搜索技术">1.1.4.为什么不是其他搜索技术？</h3>
+<p>目前比较知名的搜索引擎技术排名：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720195142535.png" >
+		<img src="/post/Elasticsearch_course/image-20210720195142535.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720195142535">
+	</a>
+	
+	<figcaption>image-20210720195142535</figcaption>
+	
+</figure></p>
+<p>虽然在早期，Apache Solr是最主要的搜索引擎技术，但随着发展elasticsearch已经渐渐超越了Solr，独占鳌头：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720195306484.png" >
+		<img src="/post/Elasticsearch_course/image-20210720195306484.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720195306484">
+	</a>
+	
+	<figcaption>image-20210720195306484</figcaption>
+	
+</figure></p>
+<h3 id="115总结">1.1.5.总结</h3>
+<p>什么是elasticsearch？</p>
+<ul>
+<li>一个开源的分布式搜索引擎，可以用来实现搜索、日志统计、分析、系统监控等功能</li>
+</ul>
+<p>什么是elastic stack（ELK）？</p>
+<ul>
+<li>是以elasticsearch为核心的技术栈，包括beats、Logstash、kibana、elasticsearch</li>
+</ul>
+<p>什么是Lucene？</p>
+<ul>
+<li>是Apache的开源搜索引擎类库，提供了搜索引擎的核心API</li>
+</ul>
+<h2 id="12倒排索引">1.2.倒排索引</h2>
+<p>倒排索引的概念是基于MySQL这样的正向索引而言的。</p>
+<h3 id="121正向索引">1.2.1.正向索引</h3>
+<p>那么什么是正向索引呢？例如给下表（tb_goods）中的id创建索引：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720195531539.png" >
+		<img src="/post/Elasticsearch_course/image-20210720195531539.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720195531539">
+	</a>
+	
+	<figcaption>image-20210720195531539</figcaption>
+	
+</figure></p>
+<p>如果是根据id查询，那么直接走索引，查询速度非常快。</p>
+<p>但如果是基于title做模糊查询，只能是逐行扫描数据，流程如下：</p>
+<p>1）用户搜索数据，条件是title符合<code>&quot;%手机%&quot;</code></p>
+<p>2）逐行获取数据，比如id为1的数据</p>
+<p>3）判断数据中的title是否符合用户搜索条件</p>
+<p>4）如果符合则放入结果集，不符合则丢弃。回到步骤1</p>
+<p>逐行扫描，也就是全表扫描，随着数据量增加，其查询效率也会越来越低。当数据量达到数百万时，就是一场灾难。</p>
+<h3 id="122倒排索引">1.2.2.倒排索引</h3>
+<p>倒排索引中有两个非常重要的概念：</p>
+<ul>
+<li>文档（<code>Document</code>）：用来搜索的数据，其中的每一条数据就是一个文档。例如一个网页、一个商品信息</li>
+<li>词条（<code>Term</code>）：对文档数据或用户搜索数据，利用某种算法分词，得到的具备含义的词语就是词条。例如：我是中国人，就可以分为：我、是、中国人、中国、国人这样的几个词条</li>
+</ul>
+<p><strong>创建倒排索引</strong>是对正向索引的一种特殊处理，流程如下：</p>
+<ul>
+<li>将每一个文档的数据利用算法分词，得到一个个词条</li>
+<li>创建表，每行数据包括词条、词条所在文档id、位置等信息</li>
+<li>因为词条唯一性，可以给词条创建索引，例如hash表结构索引</li>
+</ul>
+<p>如图：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720200457207.png" >
+		<img src="/post/Elasticsearch_course/image-20210720200457207.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720200457207">
+	</a>
+	
+	<figcaption>image-20210720200457207</figcaption>
+	
+</figure></p>
+<p>倒排索引的<strong>搜索流程</strong>如下（以搜索&quot;华为手机&quot;为例）：</p>
+<p>1）用户输入条件<code>&quot;华为手机&quot;</code>进行搜索。</p>
+<p>2）对用户输入内容<strong>分词</strong>，得到词条：<code>华为</code>、<code>手机</code>。</p>
+<p>3）拿着词条在倒排索引中查找，可以得到包含词条的文档id：1、2、3。</p>
+<p>4）拿着文档id到正向索引中查找具体文档。</p>
+<p>如图：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720201115192.png" >
+		<img src="/post/Elasticsearch_course/image-20210720201115192.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720201115192">
+	</a>
+	
+	<figcaption>image-20210720201115192</figcaption>
+	
+</figure></p>
+<p>虽然要先查询倒排索引，再查询倒排索引，但是无论是词条、还是文档id都建立了索引，查询速度非常快！无需全表扫描。</p>
+<h3 id="123正向和倒排">1.2.3.正向和倒排</h3>
+<p>那么为什么一个叫做正向索引，一个叫做倒排索引呢？</p>
+<ul>
+<li>
+<p><strong>正向索引</strong>是最传统的，根据id索引的方式。但根据词条查询时，必须先逐条获取每个文档，然后判断文档中是否包含所需要的词条，是<strong>根据文档找词条的过程</strong>。</p>
+</li>
+<li>
+<p>而<strong>倒排索引</strong>则相反，是先找到用户要搜索的词条，根据词条得到保护词条的文档的id，然后根据id获取文档。是<strong>根据词条找文档的过程</strong>。</p>
+</li>
+</ul>
+<p>是不是恰好反过来了？</p>
+<p>那么两者方式的优缺点是什么呢？</p>
+<p><strong>正向索引</strong>：</p>
+<ul>
+<li>优点：
+<ul>
+<li>可以给多个字段创建索引</li>
+<li>根据索引字段搜索、排序速度非常快</li>
+</ul>
+</li>
+<li>缺点：
+<ul>
+<li>根据非索引字段，或者索引字段中的部分词条查找时，只能全表扫描。</li>
+</ul>
+</li>
+</ul>
+<p><strong>倒排索引</strong>：</p>
+<ul>
+<li>优点：
+<ul>
+<li>根据词条搜索、模糊搜索时，速度非常快</li>
+</ul>
+</li>
+<li>缺点：
+<ul>
+<li>只能给词条创建索引，而不是字段</li>
+<li>无法根据字段做排序</li>
+</ul>
+</li>
+</ul>
+<h2 id="13es的一些概念">1.3.es的一些概念</h2>
+<p>elasticsearch中有很多独有的概念，与mysql中略有差别，但也有相似之处。</p>
+<h3 id="131文档和字段">1.3.1.文档和字段</h3>
+<p>elasticsearch是面向**文档（Document）**存储的，可以是数据库中的一条商品数据，一个订单信息。文档数据会被序列化为json格式后存储在elasticsearch中：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720202707797.png" >
+		<img src="/post/Elasticsearch_course/image-20210720202707797.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720202707797">
+	</a>
+	
+	<figcaption>image-20210720202707797</figcaption>
+	
+</figure></p>
+<p>而Json文档中往往包含很多的<strong>字段（Field）</strong>，类似于数据库中的列。</p>
+<h3 id="132索引和映射">1.3.2.索引和映射</h3>
+<p><strong>索引（Index）</strong>，就是相同类型的文档的集合。</p>
+<p>例如：</p>
+<ul>
+<li>所有用户文档，就可以组织在一起，称为用户的索引；</li>
+<li>所有商品的文档，可以组织在一起，称为商品的索引；</li>
+<li>所有订单的文档，可以组织在一起，称为订单的索引；</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720203022172.png" >
+		<img src="/post/Elasticsearch_course/image-20210720203022172.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720203022172">
+	</a>
+	
+	<figcaption>image-20210720203022172</figcaption>
+	
+</figure></p>
+<p>因此，我们可以把索引当做是数据库中的表。</p>
+<p>数据库的表会有约束信息，用来定义表的结构、字段的名称、类型等信息。因此，索引库中就有<strong>映射（mapping）</strong>，是索引中文档的字段约束信息，类似表的结构约束。</p>
+<h3 id="133mysql与elasticsearch">1.3.3.mysql与elasticsearch</h3>
+<p>我们统一的把mysql与elasticsearch的概念做一下对比：</p>
+<table>
+<thead>
+<tr>
+<th><strong>MySQL</strong></th>
+<th><strong>Elasticsearch</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td>Index</td>
+<td>索引(index)，就是文档的集合，类似数据库的表(table)</td>
+</tr>
+<tr>
+<td>Row</td>
+<td>Document</td>
+<td>文档（Document），就是一条条的数据，类似数据库中的行（Row），文档都是JSON格式</td>
+</tr>
+<tr>
+<td>Column</td>
+<td>Field</td>
+<td>字段（Field），就是JSON文档中的字段，类似数据库中的列（Column）</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>Mapping</td>
+<td>Mapping（映射）是索引中文档的约束，例如字段类型约束。类似数据库的表结构（Schema）</td>
+</tr>
+<tr>
+<td>SQL</td>
+<td>DSL</td>
+<td>DSL是elasticsearch提供的JSON风格的请求语句，用来操作elasticsearch，实现CRUD</td>
+</tr>
+</tbody>
+</table>
+<p>是不是说，我们学习了elasticsearch就不再需要mysql了呢？</p>
+<p>并不是如此，两者各自有自己的擅长支出：</p>
+<ul>
+<li>
+<p>Mysql：擅长事务类型操作，可以确保数据的安全和一致性</p>
+</li>
+<li>
+<p>Elasticsearch：擅长海量数据的搜索、分析、计算</p>
+</li>
+</ul>
+<p>因此在企业中，往往是两者结合使用：</p>
+<ul>
+<li>对安全性要求较高的写操作，使用mysql实现</li>
+<li>对查询性能要求较高的搜索需求，使用elasticsearch实现</li>
+<li>两者再基于某种方式，实现数据的同步，保证一致性</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720203534945.png" >
+		<img src="/post/Elasticsearch_course/image-20210720203534945.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720203534945">
+	</a>
+	
+	<figcaption>image-20210720203534945</figcaption>
+	
+</figure></p>
+<h2 id="14安装eskibana">1.4.安装es、kibana</h2>
+<h3 id="141安装">1.4.1.安装</h3>
+<p>参考我的如下博客：</p>
+<p><a class="link" href="/p/docker%e9%83%a8%e7%bd%b2elasticsearch/" >安装Elasticsearch和Kibana</a></p>
+<h3 id="142分词器">1.4.2.分词器</h3>
+<p>参考我的如下博客：</p>
+<p><a class="link" href="/p/docker%e9%83%a8%e7%bd%b2elasticsearch/" >安装Elasticsearch和Kibana</a></p>
+<h3 id="143总结">1.4.3.总结</h3>
+<p>分词器的作用是什么？</p>
+<ul>
+<li>创建倒排索引时对文档分词</li>
+<li>用户搜索时，对输入的内容分词</li>
+</ul>
+<p>IK分词器有几种模式？</p>
+<ul>
+<li>ik_smart：智能切分，粗粒度</li>
+<li>ik_max_word：最细切分，细粒度</li>
+</ul>
+<p>IK分词器如何拓展词条？如何停用词条？</p>
+<ul>
+<li>利用config目录的IkAnalyzer.cfg.xml文件添加拓展词典和停用词典</li>
+<li>在词典中添加拓展词条或者停用词条</li>
+</ul>
+<h1 id="2索引库操作">2.索引库操作</h1>
+<p>索引库就类似数据库表，mapping映射就类似表的结构。</p>
+<p>我们要向es中存储数据，必须先创建“库”和“表”。</p>
+<h2 id="21mapping映射属性">2.1.mapping映射属性</h2>
+<p>mapping是对索引库中文档的约束，常见的mapping属性包括：</p>
+<ul>
+<li>type：字段数据类型，常见的简单类型有：
+<ul>
+<li>字符串：text（可分词的文本）、keyword（精确值，例如：品牌、国家、ip地址）</li>
+<li>数值：long、integer、short、byte、double、float、</li>
+<li>布尔：boolean</li>
+<li>日期：date</li>
+<li>对象：object</li>
+</ul>
+</li>
+<li>index：是否创建索引，默认为true</li>
+<li>analyzer：使用哪种分词器</li>
+<li>properties：该字段的子字段</li>
+</ul>
+<p>例如下面的json文档：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+    <span class="nt">&#34;age&#34;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+    <span class="nt">&#34;weight&#34;</span><span class="p">:</span> <span class="mf">52.1</span><span class="p">,</span>
+    <span class="nt">&#34;isMarried&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&#34;info&#34;</span><span class="p">:</span> <span class="s2">&#34;程序员Java讲师&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;zy@itcast.cn&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;score&#34;</span><span class="p">:</span> <span class="p">[</span><span class="mf">99.1</span><span class="p">,</span> <span class="mf">99.5</span><span class="p">,</span> <span class="mf">98.9</span><span class="p">],</span>
+    <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;firstName&#34;</span><span class="p">:</span> <span class="s2">&#34;云&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;lastName&#34;</span><span class="p">:</span> <span class="s2">&#34;赵&#34;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>对应的每个字段映射（mapping）：</p>
+<ul>
+<li>age：类型为 integer；参与搜索，因此需要index为true；无需分词器</li>
+<li>weight：类型为float；参与搜索，因此需要index为true；无需分词器</li>
+<li>isMarried：类型为boolean；参与搜索，因此需要index为true；无需分词器</li>
+<li>info：类型为字符串，需要分词，因此是text；参与搜索，因此需要index为true；分词器可以用ik_smart</li>
+<li>email：类型为字符串，但是不需要分词，因此是keyword；不参与搜索，因此需要index为false；无需分词器</li>
+<li>score：虽然是数组，但是我们只看元素的类型，类型为float；参与搜索，因此需要index为true；无需分词器</li>
+<li>name：类型为object，需要定义多个子属性
+<ul>
+<li>name.firstName；类型为字符串，但是不需要分词，因此是keyword；参与搜索，因此需要index为true；无需分词器</li>
+<li>name.lastName；类型为字符串，但是不需要分词，因此是keyword；参与搜索，因此需要index为true；无需分词器</li>
+</ul>
+</li>
+</ul>
+<h2 id="22索引库的crud">2.2.索引库的CRUD</h2>
+<p>这里我们统一使用Kibana编写DSL的方式来演示。</p>
+<h3 id="221创建索引库和映射">2.2.1.创建索引库和映射</h3>
+<h4 id="基本语法">基本语法：</h4>
+<ul>
+<li>请求方式：PUT</li>
+<li>请求路径：/索引库名，可以自定义</li>
+<li>请求参数：mapping映射</li>
+</ul>
+<p>格式：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">PUT</span> <span class="err">/索引库名称</span>
+<span class="p">{</span>
+  <span class="nt">&#34;mappings&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;properties&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;字段名&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;analyzer&#34;</span><span class="p">:</span> <span class="s2">&#34;ik_smart&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;字段名2&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;index&#34;</span><span class="p">:</span> <span class="s2">&#34;false&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;字段名3&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;properties&#34;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&#34;子字段&#34;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="c1">// ...略
+</span><span class="c1"></span>    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="示例">示例：</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh">PUT /heima
+<span class="o">{</span>
+  <span class="s2">&#34;mappings&#34;</span>: <span class="o">{</span>
+    <span class="s2">&#34;properties&#34;</span>: <span class="o">{</span>
+      <span class="s2">&#34;info&#34;</span>:<span class="o">{</span>
+        <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;text&#34;</span>,
+        <span class="s2">&#34;analyzer&#34;</span>: <span class="s2">&#34;ik_smart&#34;</span>
+      <span class="o">}</span>,
+      <span class="s2">&#34;email&#34;</span>:<span class="o">{</span>
+        <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;keyword&#34;</span>,
+        <span class="s2">&#34;index&#34;</span>: <span class="s2">&#34;falsae&#34;</span>
+      <span class="o">}</span>,
+      <span class="s2">&#34;name&#34;</span>:<span class="o">{</span>
+        <span class="s2">&#34;properties&#34;</span>: <span class="o">{</span>
+          <span class="s2">&#34;firstName&#34;</span>: <span class="o">{</span>
+            <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;keyword&#34;</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+      <span class="o">}</span>,
+      // ... 略
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="222查询索引库">2.2.2.查询索引库</h3>
+<p><strong>基本语法</strong>：</p>
+<ul>
+<li>
+<p>请求方式：GET</p>
+</li>
+<li>
+<p>请求路径：/索引库名</p>
+</li>
+<li>
+<p>请求参数：无</p>
+</li>
+</ul>
+<p><strong>格式</strong>：</p>
+<pre tabindex="0"><code>GET /索引库名
+</code></pre><p><strong>示例</strong>：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720211019329.png" >
+		<img src="/post/Elasticsearch_course/image-20210720211019329.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720211019329">
+	</a>
+	
+	<figcaption>image-20210720211019329</figcaption>
+	
+</figure></p>
+<h3 id="223修改索引库">2.2.3.修改索引库</h3>
+<p>倒排索引结构虽然不复杂，但是一旦数据结构改变（比如改变了分词器），就需要重新创建倒排索引，这简直是灾难。因此索引库<strong>一旦创建，无法修改mapping</strong>。</p>
+<p>虽然无法修改mapping中已有的字段，但是却允许添加新的字段到mapping中，因为不会对倒排索引产生影响。</p>
+<p><strong>语法说明</strong>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">PUT</span> <span class="err">/索引库名/_mapping</span>
+<span class="p">{</span>
+  <span class="nt">&#34;properties&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;新字段名&#34;</span><span class="p">:{</span>
+      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;integer&#34;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p><strong>示例</strong>：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720212357390.png" >
+		<img src="/post/Elasticsearch_course/image-20210720212357390.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720212357390">
+	</a>
+	
+	<figcaption>image-20210720212357390</figcaption>
+	
+</figure></p>
+<h3 id="224删除索引库">2.2.4.删除索引库</h3>
+<p><strong>语法：</strong></p>
+<ul>
+<li>
+<p>请求方式：DELETE</p>
+</li>
+<li>
+<p>请求路径：/索引库名</p>
+</li>
+<li>
+<p>请求参数：无</p>
+</li>
+</ul>
+<p><strong>格式：</strong></p>
+<pre tabindex="0"><code>DELETE /索引库名
+</code></pre><p>在kibana中测试：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720212123420.png" >
+		<img src="/post/Elasticsearch_course/image-20210720212123420.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720212123420">
+	</a>
+	
+	<figcaption>image-20210720212123420</figcaption>
+	
+</figure></p>
+<h3 id="225总结">2.2.5.总结</h3>
+<p>索引库操作有哪些？</p>
+<ul>
+<li>创建索引库：PUT /索引库名</li>
+<li>查询索引库：GET /索引库名</li>
+<li>删除索引库：DELETE /索引库名</li>
+<li>添加字段：PUT /索引库名/_mapping</li>
+</ul>
+<h1 id="3文档操作">3.文档操作</h1>
+<h2 id="31新增文档">3.1.新增文档</h2>
+<p><strong>语法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">POST</span> <span class="err">/索引库名/_doc/文档id</span>
+<span class="p">{</span>
+    <span class="nt">&#34;字段1&#34;</span><span class="p">:</span> <span class="s2">&#34;值1&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;字段2&#34;</span><span class="p">:</span> <span class="s2">&#34;值2&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;字段3&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;子属性1&#34;</span><span class="p">:</span> <span class="s2">&#34;值3&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;子属性2&#34;</span><span class="p">:</span> <span class="s2">&#34;值4&#34;</span>
+    <span class="p">},</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p><strong>示例：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">POST</span> <span class="err">/heima/_doc/</span><span class="mi">1</span>
+<span class="p">{</span>
+    <span class="nt">&#34;info&#34;</span><span class="p">:</span> <span class="s2">&#34;程序员Java讲师&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;zy@itcast.cn&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;firstName&#34;</span><span class="p">:</span> <span class="s2">&#34;云&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;lastName&#34;</span><span class="p">:</span> <span class="s2">&#34;赵&#34;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p><strong>响应：</strong></p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720212933362.png" >
+		<img src="/post/Elasticsearch_course/image-20210720212933362.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720212933362">
+	</a>
+	
+	<figcaption>image-20210720212933362</figcaption>
+	
+</figure></p>
+<h2 id="32查询文档">3.2.查询文档</h2>
+<p>根据rest风格，新增是post，查询应该是get，不过查询一般都需要条件，这里我们把文档id带上。</p>
+<p><strong>语法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">GET</span> <span class="err">/</span><span class="p">{</span><span class="err">索引库名称</span><span class="p">}</span><span class="err">/_doc/</span><span class="p">{</span><span class="err">id</span><span class="p">}</span>
+
+</code></pre></div><p><strong>通过kibana查看数据：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="nx">GET</span> <span class="o">/</span><span class="nx">heima</span><span class="o">/</span><span class="nx">_doc</span><span class="o">/</span><span class="mi">1</span>
+
+</code></pre></div><p><strong>查看结果：</strong></p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720213345003.png" >
+		<img src="/post/Elasticsearch_course/image-20210720213345003.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720213345003">
+	</a>
+	
+	<figcaption>image-20210720213345003</figcaption>
+	
+</figure></p>
+<h2 id="33删除文档">3.3.删除文档</h2>
+<p>删除使用DELETE请求，同样，需要根据id进行删除：</p>
+<p><strong>语法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="nx">DELETE</span> <span class="o">/</span><span class="p">{</span><span class="nx">索引库名</span><span class="p">}</span><span class="o">/</span><span class="nx">_doc</span><span class="o">/</span><span class="nx">id值</span>
+
+</code></pre></div><p><strong>示例：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">#</span> <span class="err">根据id删除数据</span>
+<span class="err">DELETE</span> <span class="err">/heima/_doc/</span><span class="mi">1</span>
+
+</code></pre></div><p><strong>结果：</strong></p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720213634918.png" >
+		<img src="/post/Elasticsearch_course/image-20210720213634918.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720213634918">
+	</a>
+	
+	<figcaption>image-20210720213634918</figcaption>
+	
+</figure></p>
+<h2 id="34修改文档">3.4.修改文档</h2>
+<p>修改有两种方式：</p>
+<ul>
+<li>全量修改：直接覆盖原来的文档</li>
+<li>增量修改：修改文档中的部分字段</li>
+</ul>
+<h3 id="341全量修改">3.4.1.全量修改</h3>
+<p>全量修改是覆盖原来的文档，其本质是：</p>
+<ul>
+<li>根据指定的id删除文档</li>
+<li>新增一个相同id的文档</li>
+</ul>
+<p><strong>注意</strong>：如果根据id删除时，id不存在，第二步的新增也会执行，也就从修改变成了新增操作了。</p>
+<p><strong>语法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">PUT</span> <span class="err">/</span><span class="p">{</span><span class="err">索引库名</span><span class="p">}</span><span class="err">/_doc/文档id</span>
+<span class="p">{</span>
+    <span class="nt">&#34;字段1&#34;</span><span class="p">:</span> <span class="s2">&#34;值1&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;字段2&#34;</span><span class="p">:</span> <span class="s2">&#34;值2&#34;</span><span class="p">,</span>
+    <span class="c1">// ... 略
+</span><span class="c1"></span><span class="p">}</span>
+
+
+</code></pre></div><p><strong>示例：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">PUT</span> <span class="err">/heima/_doc/</span><span class="mi">1</span>
+<span class="p">{</span>
+    <span class="nt">&#34;info&#34;</span><span class="p">:</span> <span class="s2">&#34;程序员高级Java讲师&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;zy@itcast.cn&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;firstName&#34;</span><span class="p">:</span> <span class="s2">&#34;云&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;lastName&#34;</span><span class="p">:</span> <span class="s2">&#34;赵&#34;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div><h3 id="342增量修改">3.4.2.增量修改</h3>
+<p>增量修改是只修改指定id匹配的文档中的部分字段。</p>
+<p><strong>语法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">POST</span> <span class="err">/</span><span class="p">{</span><span class="err">索引库名</span><span class="p">}</span><span class="err">/_update/文档id</span>
+<span class="p">{</span>
+    <span class="nt">&#34;doc&#34;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&#34;字段名&#34;</span><span class="p">:</span> <span class="s2">&#34;新的值&#34;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div><p><strong>示例：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">POST</span> <span class="err">/heima/_update/</span><span class="mi">1</span>
+<span class="p">{</span>
+  <span class="nt">&#34;doc&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;ZhaoYun@itcast.cn&#34;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div><h2 id="35总结">3.5.总结</h2>
+<p>文档操作有哪些？</p>
+<ul>
+<li>创建文档：POST /{索引库名}/_doc/文档id   { json文档 }</li>
+<li>查询文档：GET /{索引库名}/_doc/文档id</li>
+<li>删除文档：DELETE /{索引库名}/_doc/文档id</li>
+<li>修改文档：
+<ul>
+<li>全量修改：PUT /{索引库名}/_doc/文档id { json文档 }</li>
+<li>增量修改：POST /{索引库名}/_update/文档id { &ldquo;doc&rdquo;: {字段}}</li>
+</ul>
+</li>
+</ul>
+<h1 id="4restapi">4.RestAPI</h1>
+<p>ES官方提供了各种不同语言的客户端，用来操作ES。这些客户端的本质就是组装DSL语句，通过http请求发送给ES。官方文档地址：https://www.elastic.co/guide/en/elasticsearch/client/index.html</p>
+<p>其中的Java Rest Client又包括两种：</p>
+<ul>
+<li>Java Low Level Rest Client</li>
+<li>Java High Level Rest Client</li>
+</ul>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720214555863.png" >
+		<img src="/post/Elasticsearch_course/image-20210720214555863.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720214555863">
+	</a>
+	
+	<figcaption>image-20210720214555863</figcaption>
+	
+</figure></p>
+<p>我们学习的是Java HighLevel Rest Client客户端API</p>
+<h2 id="40导入demo工程">4.0.导入Demo工程</h2>
+<h3 id="401导入数据">4.0.1.导入数据</h3>
+<p>首先导入课前资料提供的数据库数据：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720220400297.png" >
+		<img src="/post/Elasticsearch_course/image-20210720220400297.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720220400297">
+	</a>
+	
+	<figcaption>image-20210720220400297</figcaption>
+	
+</figure></p>
+<p>数据结构如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">tb_hotel</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="w"> </span><span class="nb">bigint</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店id&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">name</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店名称；例：7天酒店&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">address</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店地址；例：航头路&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">price</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店价格；例：329&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">score</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店评分；例：45，就是4.5分&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">brand</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店品牌；例：如家&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">city</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;所在城市；例：上海&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">star_name</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店星级，从低到高分别是：1星到5星，1钻到5钻&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">business</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;商圈；例：虹桥&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">latitude</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;纬度；例：31.2497&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">longitude</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;经度；例：120.3925&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="o">`</span><span class="n">pic</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;酒店图片；例:/img/1.jpg&#39;</span><span class="p">,</span><span class="w">
+</span><span class="w">  </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span><span class="w">
+</span><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span></code></pre></div><h3 id="402导入项目">4.0.2.导入项目</h3>
+<p>然后导入课前资料提供的项目:</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720220503411.png" >
+		<img src="/post/Elasticsearch_course/image-20210720220503411.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720220503411">
+	</a>
+	
+	<figcaption>image-20210720220503411</figcaption>
+	
+</figure></p>
+<p>项目结构如图：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720220647541.png" >
+		<img src="/post/Elasticsearch_course/image-20210720220647541.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720220647541">
+	</a>
+	
+	<figcaption>image-20210720220647541</figcaption>
+	
+</figure></p>
+<h3 id="403mapping映射分析">4.0.3.mapping映射分析</h3>
+<p>创建索引库，最关键的是mapping映射，而mapping映射要考虑的信息包括：</p>
+<ul>
+<li>字段名</li>
+<li>字段数据类型</li>
+<li>是否参与搜索</li>
+<li>是否需要分词</li>
+<li>如果分词，分词器是什么？</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li>字段名、字段数据类型，可以参考数据表结构的名称和类型</li>
+<li>是否参与搜索要分析业务来判断，例如图片地址，就无需参与搜索</li>
+<li>是否分词呢要看内容，内容如果是一个整体就无需分词，反之则要分词</li>
+<li>分词器，我们可以统一使用ik_max_word</li>
+</ul>
+<p>来看下酒店数据的索引库结构:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">PUT</span> <span class="err">/hotel</span>
+<span class="p">{</span>
+  <span class="nt">&#34;mappings&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;properties&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;name&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;analyzer&#34;</span><span class="p">:</span> <span class="s2">&#34;ik_max_word&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;copy_to&#34;</span><span class="p">:</span> <span class="s2">&#34;all&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;address&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;index&#34;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;price&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;integer&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;score&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;integer&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;brand&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;copy_to&#34;</span><span class="p">:</span> <span class="s2">&#34;all&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;city&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;copy_to&#34;</span><span class="p">:</span> <span class="s2">&#34;all&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;starName&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;business&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;location&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;geo_point&#34;</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;pic&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;keyword&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;index&#34;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;all&#34;</span><span class="p">:{</span>
+        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;text&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;analyzer&#34;</span><span class="p">:</span> <span class="s2">&#34;ik_max_word&#34;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div><p>几个特殊字段说明：</p>
+<ul>
+<li>location：地理坐标，里面包含精度、纬度</li>
+<li>all：一个组合字段，其目的是将多字段的值 利用copy_to合并，提供给用户搜索</li>
+</ul>
+<p>地理坐标说明：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720222110126.png" >
+		<img src="/post/Elasticsearch_course/image-20210720222110126.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720222110126">
+	</a>
+	
+	<figcaption>image-20210720222110126</figcaption>
+	
+</figure></p>
+<p>copy_to说明：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720222221516.png" >
+		<img src="/post/Elasticsearch_course/image-20210720222221516.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720222221516">
+	</a>
+	
+	<figcaption>image-20210720222221516</figcaption>
+	
+</figure></p>
+<h3 id="404初始化restclient">4.0.4.初始化RestClient</h3>
+<p>在elasticsearch提供的API中，与elasticsearch一切交互都封装在一个名为RestHighLevelClient的类中，必须先完成这个对象的初始化，建立与elasticsearch的连接。</p>
+<p>分为三步：</p>
+<p>1）引入es的RestHighLevelClient依赖：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.elasticsearch.client<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>elasticsearch-rest-high-level-client<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+</code></pre></div><p>2）因为SpringBoot默认的ES版本是7.6.2，所以我们需要覆盖默认的ES版本：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;properties&gt;</span>
+    <span class="nt">&lt;java.version&gt;</span>1.8<span class="nt">&lt;/java.version&gt;</span>
+    <span class="nt">&lt;elasticsearch.version&gt;</span>7.12.1<span class="nt">&lt;/elasticsearch.version&gt;</span>
+<span class="nt">&lt;/properties&gt;</span>
+
+</code></pre></div><p>3）初始化RestHighLevelClient：</p>
+<p>初始化的代码如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">RestHighLevelClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RestHighLevelClient</span><span class="o">(</span><span class="n">RestClient</span><span class="o">.</span><span class="na">builder</span><span class="o">(</span>
+        <span class="n">HttpHost</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">&#34;http://192.168.150.101:9200&#34;</span><span class="o">)</span>
+<span class="o">));</span>
+
+</code></pre></div><p>这里为了单元测试方便，我们创建一个测试类HotelIndexTest，然后将初始化的代码编写在@BeforeEach方法中：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">cn.itcast.hotel</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.http.HttpHost</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.elasticsearch.client.RestHighLevelClient</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.AfterEach</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.BeforeEach</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.Test</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HotelIndexTest</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">RestHighLevelClient</span> <span class="n">client</span><span class="o">;</span>
+
+    <span class="nd">@BeforeEach</span>
+    <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RestHighLevelClient</span><span class="o">(</span><span class="n">RestClient</span><span class="o">.</span><span class="na">builder</span><span class="o">(</span>
+                <span class="n">HttpHost</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">&#34;http://192.168.150.101:9200&#34;</span><span class="o">)</span>
+        <span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="nd">@AfterEach</span>
+    <span class="kt">void</span> <span class="nf">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="41创建索引库">4.1.创建索引库</h2>
+<h3 id="411代码解读">4.1.1.代码解读</h3>
+<p>创建索引库的API如下：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720223049408.png" >
+		<img src="/post/Elasticsearch_course/image-20210720223049408.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720223049408">
+	</a>
+	
+	<figcaption>image-20210720223049408</figcaption>
+	
+</figure></p>
+<p>代码分为三步：</p>
+<ul>
+<li>1）创建Request对象。因为是创建索引库的操作，因此Request是CreateIndexRequest。</li>
+<li>2）添加请求参数，其实就是DSL的JSON参数部分。因为json字符串很长，这里是定义了静态字符串常量MAPPING_TEMPLATE，让代码看起来更加优雅。</li>
+<li>3）发送请求，client.indices()方法的返回值是IndicesClient类型，封装了所有与索引库操作有关的方法。</li>
+</ul>
+<h3 id="412完整示例">4.1.2.完整示例</h3>
+<p>在hotel-demo的cn.itcast.hotel.constants包下，创建一个类，定义mapping映射的JSON字符串常量：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">cn.itcast.hotel.constants</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HotelConstants</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">MAPPING_TEMPLATE</span> <span class="o">=</span> <span class="s">&#34;{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;  \&#34;mappings\&#34;: {\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;    \&#34;properties\&#34;: {\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;id\&#34;: {\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;keyword\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;name\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;text\&#34;,\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;analyzer\&#34;: \&#34;ik_max_word\&#34;,\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;copy_to\&#34;: \&#34;all\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;address\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;keyword\&#34;,\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;index\&#34;: false\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;price\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;integer\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;score\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;integer\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;brand\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;keyword\&#34;,\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;copy_to\&#34;: \&#34;all\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;city\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;keyword\&#34;,\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;copy_to\&#34;: \&#34;all\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;starName\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;keyword\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;business\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;keyword\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;location\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;geo_point\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;pic\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;keyword\&#34;,\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;index\&#34;: false\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      },\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      \&#34;all\&#34;:{\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;type\&#34;: \&#34;text\&#34;,\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;        \&#34;analyzer\&#34;: \&#34;ik_max_word\&#34;\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;      }\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;    }\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;  }\n&#34;</span> <span class="o">+</span>
+            <span class="s">&#34;}&#34;</span><span class="o">;</span>
+<span class="o">}</span>
+
+</code></pre></div><p>在hotel-demo中的HotelIndexTest测试类中，编写单元测试，实现创建索引：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">createHotelIndex</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 1.创建Request对象
+</span><span class="c1"></span>    <span class="n">CreateIndexRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CreateIndexRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">);</span>
+    <span class="c1">// 2.准备请求的参数：DSL语句
+</span><span class="c1"></span>    <span class="n">request</span><span class="o">.</span><span class="na">source</span><span class="o">(</span><span class="n">MAPPING_TEMPLATE</span><span class="o">,</span> <span class="n">XContentType</span><span class="o">.</span><span class="na">JSON</span><span class="o">);</span>
+    <span class="c1">// 3.发送请求
+</span><span class="c1"></span>    <span class="n">client</span><span class="o">.</span><span class="na">indices</span><span class="o">().</span><span class="na">create</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="42删除索引库">4.2.删除索引库</h2>
+<p>删除索引库的DSL语句非常简单：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">DELETE</span> <span class="err">/hotel</span>
+
+</code></pre></div><p>与创建索引库相比：</p>
+<ul>
+<li>请求方式从PUT变为DELTE</li>
+<li>请求路径不变</li>
+<li>无请求参数</li>
+</ul>
+<p>所以代码的差异，注意体现在Request对象上。依然是三步走：</p>
+<ul>
+<li>1）创建Request对象。这次是DeleteIndexRequest对象</li>
+<li>2）准备参数。这里是无参</li>
+<li>3）发送请求。改用delete方法</li>
+</ul>
+<p>在hotel-demo中的HotelIndexTest测试类中，编写单元测试，实现删除索引：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">testDeleteHotelIndex</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 1.创建Request对象
+</span><span class="c1"></span>    <span class="n">DeleteIndexRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DeleteIndexRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">);</span>
+    <span class="c1">// 2.发送请求
+</span><span class="c1"></span>    <span class="n">client</span><span class="o">.</span><span class="na">indices</span><span class="o">().</span><span class="na">delete</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="43判断索引库是否存在">4.3.判断索引库是否存在</h2>
+<p>判断索引库是否存在，本质就是查询，对应的DSL是：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">GET</span> <span class="err">/hotel</span>
+
+</code></pre></div><p>因此与删除的Java代码流程是类似的。依然是三步走：</p>
+<ul>
+<li>1）创建Request对象。这次是GetIndexRequest对象</li>
+<li>2）准备参数。这里是无参</li>
+<li>3）发送请求。改用exists方法</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">testExistsHotelIndex</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 1.创建Request对象
+</span><span class="c1"></span>    <span class="n">GetIndexRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GetIndexRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">);</span>
+    <span class="c1">// 2.发送请求
+</span><span class="c1"></span>    <span class="kt">boolean</span> <span class="n">exists</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">indices</span><span class="o">().</span><span class="na">exists</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+    <span class="c1">// 3.输出
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">exists</span> <span class="o">?</span> <span class="s">&#34;索引库已经存在！&#34;</span> <span class="o">:</span> <span class="s">&#34;索引库不存在！&#34;</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="44总结">4.4.总结</h2>
+<p>JavaRestClient操作elasticsearch的流程基本类似。核心是client.indices()方法来获取索引库的操作对象。</p>
+<p>索引库操作的基本步骤：</p>
+<ul>
+<li>初始化RestHighLevelClient</li>
+<li>创建XxxIndexRequest。XXX是Create、Get、Delete</li>
+<li>准备DSL（ Create时需要，其它是无参）</li>
+<li>发送请求。调用RestHighLevelClient#indices().xxx()方法，xxx是create、exists、delete</li>
+</ul>
+<h1 id="5restclient操作文档">5.RestClient操作文档</h1>
+<p>为了与索引库操作分离，我们再次参加一个测试类，做两件事情：</p>
+<ul>
+<li>初始化RestHighLevelClient</li>
+<li>我们的酒店数据在数据库，需要利用IHotelService去查询，所以注入这个接口</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">cn.itcast.hotel</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">cn.itcast.hotel.pojo.Hotel</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">cn.itcast.hotel.service.IHotelService</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.AfterEach</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.BeforeEach</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="nd">@SpringBootTest</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HotelDocumentTest</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">IHotelService</span> <span class="n">hotelService</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">RestHighLevelClient</span> <span class="n">client</span><span class="o">;</span>
+
+    <span class="nd">@BeforeEach</span>
+    <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RestHighLevelClient</span><span class="o">(</span><span class="n">RestClient</span><span class="o">.</span><span class="na">builder</span><span class="o">(</span>
+                <span class="n">HttpHost</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">&#34;http://192.168.150.101:9200&#34;</span><span class="o">)</span>
+        <span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="nd">@AfterEach</span>
+    <span class="kt">void</span> <span class="nf">tearDown</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">client</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+</code></pre></div><h2 id="51新增文档">5.1.新增文档</h2>
+<p>我们要将数据库的酒店数据查询出来，写入elasticsearch中。</p>
+<h3 id="511索引库实体类">5.1.1.索引库实体类</h3>
+<p>数据库查询后的结果是一个Hotel类型的对象。结构如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Data</span>
+<span class="nd">@TableName</span><span class="o">(</span><span class="s">&#34;tb_hotel&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Hotel</span> <span class="o">{</span>
+    <span class="nd">@TableId</span><span class="o">(</span><span class="n">type</span> <span class="o">=</span> <span class="n">IdType</span><span class="o">.</span><span class="na">INPUT</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">address</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">price</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">score</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">brand</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">city</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">starName</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">business</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">longitude</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">latitude</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">pic</span><span class="o">;</span>
+<span class="o">}</span>
+
+</code></pre></div><p>与我们的索引库结构存在差异：</p>
+<ul>
+<li>longitude和latitude需要合并为location</li>
+</ul>
+<p>因此，我们需要定义一个新的类型，与索引库结构吻合：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">cn.itcast.hotel.pojo</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">lombok.Data</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.NoArgsConstructor</span><span class="o">;</span>
+
+<span class="nd">@Data</span>
+<span class="nd">@NoArgsConstructor</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HotelDoc</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">address</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">price</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">score</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">brand</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">city</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">starName</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">business</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">location</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">pic</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">HotelDoc</span><span class="o">(</span><span class="n">Hotel</span> <span class="n">hotel</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">address</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getAddress</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">price</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getPrice</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">score</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getScore</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">brand</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getBrand</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">city</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getCity</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">starName</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getStarName</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">business</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getBusiness</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">location</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getLatitude</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;, &#34;</span> <span class="o">+</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getLongitude</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pic</span> <span class="o">=</span> <span class="n">hotel</span><span class="o">.</span><span class="na">getPic</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+</code></pre></div><h3 id="512语法说明">5.1.2.语法说明</h3>
+<p>新增文档的DSL语句如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">POST</span> <span class="err">/</span><span class="p">{</span><span class="err">索引库名</span><span class="p">}</span><span class="err">/_doc/</span><span class="mi">1</span>
+<span class="p">{</span>
+    <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;Jack&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;age&#34;</span><span class="p">:</span> <span class="mi">21</span>
+<span class="p">}</span>
+
+</code></pre></div><p>对应的java代码如图：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720230027240.png" >
+		<img src="/post/Elasticsearch_course/image-20210720230027240.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720230027240">
+	</a>
+	
+	<figcaption>image-20210720230027240</figcaption>
+	
+</figure></p>
+<p>可以看到与创建索引库类似，同样是三步走：</p>
+<ul>
+<li>1）创建Request对象</li>
+<li>2）准备请求参数，也就是DSL中的JSON文档</li>
+<li>3）发送请求</li>
+</ul>
+<p>变化的地方在于，这里直接使用client.xxx()的API，不再需要client.indices()了。</p>
+<h3 id="513完整代码">5.1.3.完整代码</h3>
+<p>我们导入酒店数据，基本流程一致，但是需要考虑几点变化：</p>
+<ul>
+<li>酒店数据来自于数据库，我们需要先查询出来，得到hotel对象</li>
+<li>hotel对象需要转为HotelDoc对象</li>
+<li>HotelDoc需要序列化为json格式</li>
+</ul>
+<p>因此，代码整体步骤如下：</p>
+<ul>
+<li>1）根据id查询酒店数据Hotel</li>
+<li>2）将Hotel封装为HotelDoc</li>
+<li>3）将HotelDoc序列化为JSON</li>
+<li>4）创建IndexRequest，指定索引库名和id</li>
+<li>5）准备请求参数，也就是JSON文档</li>
+<li>6）发送请求</li>
+</ul>
+<p>在hotel-demo的HotelDocumentTest测试类中，编写单元测试：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">testAddDocument</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 1.根据id查询酒店数据
+</span><span class="c1"></span>    <span class="n">Hotel</span> <span class="n">hotel</span> <span class="o">=</span> <span class="n">hotelService</span><span class="o">.</span><span class="na">getById</span><span class="o">(</span><span class="n">61083L</span><span class="o">);</span>
+    <span class="c1">// 2.转换为文档类型
+</span><span class="c1"></span>    <span class="n">HotelDoc</span> <span class="n">hotelDoc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HotelDoc</span><span class="o">(</span><span class="n">hotel</span><span class="o">);</span>
+    <span class="c1">// 3.将HotelDoc转json
+</span><span class="c1"></span>    <span class="n">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">hotelDoc</span><span class="o">);</span>
+
+    <span class="c1">// 1.准备Request对象
+</span><span class="c1"></span>    <span class="n">IndexRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">).</span><span class="na">id</span><span class="o">(</span><span class="n">hotelDoc</span><span class="o">.</span><span class="na">getId</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+    <span class="c1">// 2.准备Json文档
+</span><span class="c1"></span>    <span class="n">request</span><span class="o">.</span><span class="na">source</span><span class="o">(</span><span class="n">json</span><span class="o">,</span> <span class="n">XContentType</span><span class="o">.</span><span class="na">JSON</span><span class="o">);</span>
+    <span class="c1">// 3.发送请求
+</span><span class="c1"></span>    <span class="n">client</span><span class="o">.</span><span class="na">index</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="52查询文档">5.2.查询文档</h2>
+<h3 id="521语法说明">5.2.1.语法说明</h3>
+<p>查询的DSL语句如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">GET</span> <span class="err">/hotel/_doc/</span><span class="p">{</span><span class="err">id</span><span class="p">}</span>
+
+</code></pre></div><p>非常简单，因此代码大概分两步：</p>
+<ul>
+<li>准备Request对象</li>
+<li>发送请求</li>
+</ul>
+<p>不过查询的目的是得到结果，解析为HotelDoc，因此难点是结果的解析。完整代码如下：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720230811674.png" >
+		<img src="/post/Elasticsearch_course/image-20210720230811674.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720230811674">
+	</a>
+	
+	<figcaption>image-20210720230811674</figcaption>
+	
+</figure></p>
+<p>可以看到，结果是一个JSON，其中文档放在一个<code>_source</code>属性中，因此解析就是拿到<code>_source</code>，反序列化为Java对象即可。</p>
+<p>与之前类似，也是三步走：</p>
+<ul>
+<li>1）准备Request对象。这次是查询，所以是GetRequest</li>
+<li>2）发送请求，得到结果。因为是查询，这里调用client.get()方法</li>
+<li>3）解析结果，就是对JSON做反序列化</li>
+</ul>
+<h3 id="522完整代码">5.2.2.完整代码</h3>
+<p>在hotel-demo的HotelDocumentTest测试类中，编写单元测试：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">testGetDocumentById</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 1.准备Request
+</span><span class="c1"></span>    <span class="n">GetRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GetRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">,</span> <span class="s">&#34;61082&#34;</span><span class="o">);</span>
+    <span class="c1">// 2.发送请求，得到响应
+</span><span class="c1"></span>    <span class="n">GetResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+    <span class="c1">// 3.解析响应结果
+</span><span class="c1"></span>    <span class="n">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getSourceAsString</span><span class="o">();</span>
+
+    <span class="n">HotelDoc</span> <span class="n">hotelDoc</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">json</span><span class="o">,</span> <span class="n">HotelDoc</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">hotelDoc</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="53删除文档">5.3.删除文档</h2>
+<p>删除的DSL为是这样的：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="err">DELETE</span> <span class="err">/hotel/_doc/</span><span class="p">{</span><span class="err">id</span><span class="p">}</span>
+
+</code></pre></div><p>与查询相比，仅仅是请求方式从DELETE变成GET，可以想象Java代码应该依然是三步走：</p>
+<ul>
+<li>1）准备Request对象，因为是删除，这次是DeleteRequest对象。要指定索引库名和id</li>
+<li>2）准备参数，无参</li>
+<li>3）发送请求。因为是删除，所以是client.delete()方法</li>
+</ul>
+<p>在hotel-demo的HotelDocumentTest测试类中，编写单元测试：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">testDeleteDocument</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 1.准备Request
+</span><span class="c1"></span>    <span class="n">DeleteRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DeleteRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">,</span> <span class="s">&#34;61083&#34;</span><span class="o">);</span>
+    <span class="c1">// 2.发送请求
+</span><span class="c1"></span>    <span class="n">client</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="54修改文档">5.4.修改文档</h2>
+<h3 id="541语法说明">5.4.1.语法说明</h3>
+<p>修改我们讲过两种方式：</p>
+<ul>
+<li>全量修改：本质是先根据id删除，再新增</li>
+<li>增量修改：修改文档中的指定字段值</li>
+</ul>
+<p>在RestClient的API中，全量修改与新增的API完全一致，判断依据是ID：</p>
+<ul>
+<li>如果新增时，ID已经存在，则修改</li>
+<li>如果新增时，ID不存在，则新增</li>
+</ul>
+<p>这里不再赘述，我们主要关注增量修改。</p>
+<p>代码示例如图：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720231040875.png" >
+		<img src="/post/Elasticsearch_course/image-20210720231040875.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720231040875">
+	</a>
+	
+	<figcaption>image-20210720231040875</figcaption>
+	
+</figure></p>
+<p>与之前类似，也是三步走：</p>
+<ul>
+<li>1）准备Request对象。这次是修改，所以是UpdateRequest</li>
+<li>2）准备参数。也就是JSON文档，里面包含要修改的字段</li>
+<li>3）更新文档。这里调用client.update()方法</li>
+</ul>
+<h3 id="542完整代码">5.4.2.完整代码</h3>
+<p>在hotel-demo的HotelDocumentTest测试类中，编写单元测试：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">testUpdateDocument</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 1.准备Request
+</span><span class="c1"></span>    <span class="n">UpdateRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UpdateRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">,</span> <span class="s">&#34;61083&#34;</span><span class="o">);</span>
+    <span class="c1">// 2.准备请求参数
+</span><span class="c1"></span>    <span class="n">request</span><span class="o">.</span><span class="na">doc</span><span class="o">(</span>
+        <span class="s">&#34;price&#34;</span><span class="o">,</span> <span class="s">&#34;952&#34;</span><span class="o">,</span>
+        <span class="s">&#34;starName&#34;</span><span class="o">,</span> <span class="s">&#34;四钻&#34;</span>
+    <span class="o">);</span>
+    <span class="c1">// 3.发送请求
+</span><span class="c1"></span>    <span class="n">client</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="55批量导入文档">5.5.批量导入文档</h2>
+<p>案例需求：利用BulkRequest批量将数据库数据导入到索引库中。</p>
+<p>步骤如下：</p>
+<ul>
+<li>
+<p>利用mybatis-plus查询酒店数据</p>
+</li>
+<li>
+<p>将查询到的酒店数据（Hotel）转换为文档类型数据（HotelDoc）</p>
+</li>
+<li>
+<p>利用JavaRestClient中的BulkRequest批处理，实现批量新增文档</p>
+</li>
+</ul>
+<h3 id="551语法说明">5.5.1.语法说明</h3>
+<p>批量处理BulkRequest，其本质就是将多个普通的CRUD请求组合在一起发送。</p>
+<p>其中提供了一个add方法，用来添加其他请求：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720232105943.png" >
+		<img src="/post/Elasticsearch_course/image-20210720232105943.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720232105943">
+	</a>
+	
+	<figcaption>image-20210720232105943</figcaption>
+	
+</figure></p>
+<p>可以看到，能添加的请求包括：</p>
+<ul>
+<li>IndexRequest，也就是新增</li>
+<li>UpdateRequest，也就是修改</li>
+<li>DeleteRequest，也就是删除</li>
+</ul>
+<p>因此Bulk中添加了多个IndexRequest，就是批量新增功能了。示例：</p>
+<p><figure 
+	>
+	<a href="/post/Elasticsearch_course/image-20210720232431383.png" >
+		<img src="/post/Elasticsearch_course/image-20210720232431383.png"
+			
+			
+			
+			loading="lazy"
+			alt="image-20210720232431383">
+	</a>
+	
+	<figcaption>image-20210720232431383</figcaption>
+	
+</figure></p>
+<p>其实还是三步走：</p>
+<ul>
+<li>1）创建Request对象。这里是BulkRequest</li>
+<li>2）准备参数。批处理的参数，就是其它Request对象，这里就是多个IndexRequest</li>
+<li>3）发起请求。这里是批处理，调用的方法为client.bulk()方法</li>
+</ul>
+<p>我们在导入酒店数据时，将上述代码改造成for循环处理即可。</p>
+<h3 id="552完整代码">5.5.2.完整代码</h3>
+<p>在hotel-demo的HotelDocumentTest测试类中，编写单元测试：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Test</span>
+<span class="kt">void</span> <span class="nf">testBulkRequest</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="c1">// 批量查询酒店数据
+</span><span class="c1"></span>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Hotel</span><span class="o">&gt;</span> <span class="n">hotels</span> <span class="o">=</span> <span class="n">hotelService</span><span class="o">.</span><span class="na">list</span><span class="o">();</span>
+
+    <span class="c1">// 1.创建Request
+</span><span class="c1"></span>    <span class="n">BulkRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BulkRequest</span><span class="o">();</span>
+    <span class="c1">// 2.准备参数，添加多个新增的Request
+</span><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="n">Hotel</span> <span class="n">hotel</span> <span class="o">:</span> <span class="n">hotels</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 2.1.转换为文档类型HotelDoc
+</span><span class="c1"></span>        <span class="n">HotelDoc</span> <span class="n">hotelDoc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HotelDoc</span><span class="o">(</span><span class="n">hotel</span><span class="o">);</span>
+        <span class="c1">// 2.2.创建新增文档的Request对象
+</span><span class="c1"></span>        <span class="n">request</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">IndexRequest</span><span class="o">(</span><span class="s">&#34;hotel&#34;</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="n">hotelDoc</span><span class="o">.</span><span class="na">getId</span><span class="o">().</span><span class="na">toString</span><span class="o">())</span>
+                    <span class="o">.</span><span class="na">source</span><span class="o">(</span><span class="n">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">hotelDoc</span><span class="o">),</span> <span class="n">XContentType</span><span class="o">.</span><span class="na">JSON</span><span class="o">));</span>
+    <span class="o">}</span>
+    <span class="c1">// 3.发送请求
+</span><span class="c1"></span>    <span class="n">client</span><span class="o">.</span><span class="na">bulk</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+<span class="o">}</span>
+
+</code></pre></div><h2 id="56小结">5.6.小结</h2>
+<p>文档操作的基本步骤：</p>
+<ul>
+<li>初始化RestHighLevelClient</li>
+<li>创建XxxRequest。XXX是Index、Get、Update、Delete、Bulk</li>
+<li>准备参数（Index、Update、Bulk时需要）</li>
+<li>发送请求。调用RestHighLevelClient#.xxx()方法，xxx是index、get、update、delete、bulk</li>
+<li>解析结果（Get时需要）</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/elasticsearch/">Elasticsearch</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/docker%E9%83%A8%E7%BD%B2elasticsearch/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/post/elasticsearch.png" loading="lazy" data-key="" data-hash="/post/elasticsearch.png"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Docker部署Elasticsearch</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        <head>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+</head>
+<body>
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'jhGjsLDo1scgQSGt0yekudk1-gzGzoHsz',
+            appKey: 'X35d2pn5VbzXf0V022XMK0lF'
+        })
+    </script>
+</body>
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2021 thinkBig Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#11了解es">1.1.了解ES</a>
+      <ol>
+        <li><a href="#111elasticsearch的作用">1.1.1.elasticsearch的作用</a></li>
+        <li><a href="#112elk技术栈">1.1.2.ELK技术栈</a></li>
+        <li><a href="#113elasticsearch和lucene">1.1.3.elasticsearch和lucene</a></li>
+        <li><a href="#114为什么不是其他搜索技术">1.1.4.为什么不是其他搜索技术？</a></li>
+        <li><a href="#115总结">1.1.5.总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#12倒排索引">1.2.倒排索引</a>
+      <ol>
+        <li><a href="#121正向索引">1.2.1.正向索引</a></li>
+        <li><a href="#122倒排索引">1.2.2.倒排索引</a></li>
+        <li><a href="#123正向和倒排">1.2.3.正向和倒排</a></li>
+      </ol>
+    </li>
+    <li><a href="#13es的一些概念">1.3.es的一些概念</a>
+      <ol>
+        <li><a href="#131文档和字段">1.3.1.文档和字段</a></li>
+        <li><a href="#132索引和映射">1.3.2.索引和映射</a></li>
+        <li><a href="#133mysql与elasticsearch">1.3.3.mysql与elasticsearch</a></li>
+      </ol>
+    </li>
+    <li><a href="#14安装eskibana">1.4.安装es、kibana</a>
+      <ol>
+        <li><a href="#141安装">1.4.1.安装</a></li>
+        <li><a href="#142分词器">1.4.2.分词器</a></li>
+        <li><a href="#143总结">1.4.3.总结</a></li>
+      </ol>
+    </li>
+  </ol>
+
+  <ol>
+    <li><a href="#21mapping映射属性">2.1.mapping映射属性</a></li>
+    <li><a href="#22索引库的crud">2.2.索引库的CRUD</a>
+      <ol>
+        <li><a href="#221创建索引库和映射">2.2.1.创建索引库和映射</a>
+          <ol>
+            <li><a href="#基本语法">基本语法：</a></li>
+            <li><a href="#示例">示例：</a></li>
+          </ol>
+        </li>
+        <li><a href="#222查询索引库">2.2.2.查询索引库</a></li>
+        <li><a href="#223修改索引库">2.2.3.修改索引库</a></li>
+        <li><a href="#224删除索引库">2.2.4.删除索引库</a></li>
+        <li><a href="#225总结">2.2.5.总结</a></li>
+      </ol>
+    </li>
+  </ol>
+
+  <ol>
+    <li><a href="#31新增文档">3.1.新增文档</a></li>
+    <li><a href="#32查询文档">3.2.查询文档</a></li>
+    <li><a href="#33删除文档">3.3.删除文档</a></li>
+    <li><a href="#34修改文档">3.4.修改文档</a>
+      <ol>
+        <li><a href="#341全量修改">3.4.1.全量修改</a></li>
+        <li><a href="#342增量修改">3.4.2.增量修改</a></li>
+      </ol>
+    </li>
+    <li><a href="#35总结">3.5.总结</a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#40导入demo工程">4.0.导入Demo工程</a>
+      <ol>
+        <li><a href="#401导入数据">4.0.1.导入数据</a></li>
+        <li><a href="#402导入项目">4.0.2.导入项目</a></li>
+        <li><a href="#403mapping映射分析">4.0.3.mapping映射分析</a></li>
+        <li><a href="#404初始化restclient">4.0.4.初始化RestClient</a></li>
+      </ol>
+    </li>
+    <li><a href="#41创建索引库">4.1.创建索引库</a>
+      <ol>
+        <li><a href="#411代码解读">4.1.1.代码解读</a></li>
+        <li><a href="#412完整示例">4.1.2.完整示例</a></li>
+      </ol>
+    </li>
+    <li><a href="#42删除索引库">4.2.删除索引库</a></li>
+    <li><a href="#43判断索引库是否存在">4.3.判断索引库是否存在</a></li>
+    <li><a href="#44总结">4.4.总结</a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#51新增文档">5.1.新增文档</a>
+      <ol>
+        <li><a href="#511索引库实体类">5.1.1.索引库实体类</a></li>
+        <li><a href="#512语法说明">5.1.2.语法说明</a></li>
+        <li><a href="#513完整代码">5.1.3.完整代码</a></li>
+      </ol>
+    </li>
+    <li><a href="#52查询文档">5.2.查询文档</a>
+      <ol>
+        <li><a href="#521语法说明">5.2.1.语法说明</a></li>
+        <li><a href="#522完整代码">5.2.2.完整代码</a></li>
+      </ol>
+    </li>
+    <li><a href="#53删除文档">5.3.删除文档</a></li>
+    <li><a href="#54修改文档">5.4.修改文档</a>
+      <ol>
+        <li><a href="#541语法说明">5.4.1.语法说明</a></li>
+        <li><a href="#542完整代码">5.4.2.完整代码</a></li>
+      </ol>
+    </li>
+    <li><a href="#55批量导入文档">5.5.批量导入文档</a>
+      <ol>
+        <li><a href="#551语法说明">5.5.1.语法说明</a></li>
+        <li><a href="#552完整代码">5.5.2.完整代码</a></li>
+      </ol>
+    </li>
+    <li><a href="#56小结">5.6.小结</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

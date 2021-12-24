@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>IDEA on thinkBig Blog</title>
+    <link>https://lzh54080452.github.io/tags/idea/</link>
+    <description>Recent content in IDEA on thinkBig Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 12 Mar 2019 09:12:33 +0800</lastBuildDate><atom:link href="https://lzh54080452.github.io/tags/idea/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IDEA 快捷键</title>
+      <link>https://lzh54080452.github.io/p/idea-%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <pubDate>Tue, 12 Mar 2019 09:12:33 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/p/idea-%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description>Idea 快捷鍵 Ctrl Ctrl + F 在当前文件进行文本查找 （必备） Ctrl + R 在当前文件进行文本替换 （必备） Ctrl + Z 撤销 （必备） Ctrl + Y 删除光标所在行 或 删除选中的行 （必备</description>
+    </item>
+    
+  </channel>
+</rss>

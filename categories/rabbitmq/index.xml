@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RabbitMQ on thinkBig Blog</title>
+    <link>https://lzh54080452.github.io/categories/rabbitmq/</link>
+    <description>Recent content in RabbitMQ on thinkBig Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 24 Dec 2021 14:47:49 +0800</lastBuildDate><atom:link href="https://lzh54080452.github.io/categories/rabbitmq/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker部署RabbitMQ</title>
+      <link>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2rabbitmq/</link>
+      <pubDate>Fri, 24 Dec 2021 14:47:49 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2rabbitmq/</guid>
+      <description>RabbitMQ部署指南 1.单机部署 我们在Centos7虚拟机中使用Docker来安装。 1.1.下载镜像 拉取 RabbitMQ Docker 镜像 我这里使用的 3-management 版本 docker pull rabbitmq:3-management</description>
+    </item>
+    
+    <item>
+      <title>RabbitMQ如何使用</title>
+      <link>https://lzh54080452.github.io/p/rabbitmq%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Fri, 24 Dec 2021 14:29:01 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/p/rabbitmq%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8/</guid>
+      <description>1.什么是消息队列 1.1.同步和异步通讯 微服务间通讯有同步和异步两种方式： 同步通讯：就像打电话，需要实时响应。 异步通讯：就像发邮件，不需要马</description>
+    </item>
+    
+  </channel>
+</rss>

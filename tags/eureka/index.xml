@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Eureka on thinkBig Blog</title>
+    <link>https://lzh54080452.github.io/tags/eureka/</link>
+    <description>Recent content in Eureka on thinkBig Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 24 Dec 2021 13:48:37 +0800</lastBuildDate><atom:link href="https://lzh54080452.github.io/tags/eureka/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SpringCloud微服务</title>
+      <link>https://lzh54080452.github.io/p/springcloud%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Fri, 24 Dec 2021 13:48:37 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/p/springcloud%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
+      <description>认识微服务 随着互联网行业的发展，对服务的要求也越来越高，服务架构也从单体架构逐渐演变为现在流行的微服务架构。这些架构之间有怎样的差别呢？ 1.</description>
+    </item>
+    
+  </channel>
+</rss>

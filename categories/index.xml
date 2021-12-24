@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on thinkBig Blog</title>
+    <link>https://lzh54080452.github.io/categories/</link>
+    <description>Recent content in Categories on thinkBig Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 25 Dec 2021 00:40:27 +0800</lastBuildDate><atom:link href="https://lzh54080452.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Elasticsearch</title>
+      <link>https://lzh54080452.github.io/categories/elasticsearch/</link>
+      <pubDate>Sat, 25 Dec 2021 00:40:27 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/elasticsearch/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RabbitMQ</title>
+      <link>https://lzh54080452.github.io/categories/rabbitmq/</link>
+      <pubDate>Fri, 24 Dec 2021 14:47:49 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/rabbitmq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>https://lzh54080452.github.io/categories/docker/</link>
+      <pubDate>Fri, 24 Dec 2021 14:21:12 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Eureka</title>
+      <link>https://lzh54080452.github.io/categories/eureka/</link>
+      <pubDate>Fri, 24 Dec 2021 13:48:37 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/eureka/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Feign</title>
+      <link>https://lzh54080452.github.io/categories/feign/</link>
+      <pubDate>Fri, 24 Dec 2021 13:48:37 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/feign/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Gateway</title>
+      <link>https://lzh54080452.github.io/categories/gateway/</link>
+      <pubDate>Fri, 24 Dec 2021 13:48:37 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/gateway/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nacos</title>
+      <link>https://lzh54080452.github.io/categories/nacos/</link>
+      <pubDate>Fri, 24 Dec 2021 13:48:37 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/nacos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ribbon</title>
+      <link>https://lzh54080452.github.io/categories/ribbon/</link>
+      <pubDate>Fri, 24 Dec 2021 13:48:37 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/ribbon/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SpringCloud</title>
+      <link>https://lzh54080452.github.io/categories/springcloud/</link>
+      <pubDate>Fri, 24 Dec 2021 13:48:37 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/springcloud/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MQTT</title>
+      <link>https://lzh54080452.github.io/categories/mqtt/</link>
+      <pubDate>Fri, 10 Dec 2021 23:25:49 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/mqtt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>eKuiper</title>
+      <link>https://lzh54080452.github.io/categories/ekuiper/</link>
+      <pubDate>Fri, 10 Dec 2021 23:01:48 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/ekuiper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mavne</title>
+      <link>https://lzh54080452.github.io/categories/mavne/</link>
+      <pubDate>Wed, 08 Dec 2021 20:53:40 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/mavne/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>https://lzh54080452.github.io/categories/java/</link>
+      <pubDate>Tue, 10 Aug 2021 13:32:00 +0800</pubDate>
+      
+      <guid>https://lzh54080452.github.io/categories/java/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

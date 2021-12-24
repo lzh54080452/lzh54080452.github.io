@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Docker 部署 FastDFS 一、docker 拉取 FastDFS 镜像 docker pull season/fastdfs:1.2 docker cmd 二、运行Tracker docker run -ti -d --name trakcer -v /opt/fastdfs/tracker_data:/fastdfs/tracker/data --net=host season/fastdfs:1.2 tracker 三、运行 Storage 注意替换{ipaddress} docker run -ti -d --name storage'><title>Docker部署FastDFS</title>
+
+<link rel='canonical' href='https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2fastdfs/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Docker部署FastDFS'>
+<meta property='og:description' content='Docker 部署 FastDFS 一、docker 拉取 FastDFS 镜像 docker pull season/fastdfs:1.2 docker cmd 二、运行Tracker docker run -ti -d --name trakcer -v /opt/fastdfs/tracker_data:/fastdfs/tracker/data --net=host season/fastdfs:1.2 tracker 三、运行 Storage 注意替换{ipaddress} docker run -ti -d --name storage'>
+<meta property='og:url' content='https://lzh54080452.github.io/p/docker%E9%83%A8%E7%BD%B2fastdfs/'>
+<meta property='og:site_name' content='thinkBig Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='FastDFS' /><meta property='article:tag' content='Docker' /><meta property='article:published_time' content='2021-09-13T14:05:02&#43;02:00'/><meta property='article:modified_time' content='2021-09-13T14:05:02&#43;02:00'/><meta property='og:image' content='https://lzh54080452.github.io/post/docker.jpeg' />
+<meta name="twitter:title" content="Docker部署FastDFS">
+<meta name="twitter:description" content="Docker 部署 FastDFS 一、docker 拉取 FastDFS 镜像 docker pull season/fastdfs:1.2 docker cmd 二、运行Tracker docker run -ti -d --name trakcer -v /opt/fastdfs/tracker_data:/fastdfs/tracker/data --net=host season/fastdfs:1.2 tracker 三、运行 Storage 注意替换{ipaddress} docker run -ti -d --name storage"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://lzh54080452.github.io/post/docker.jpeg' />
+    <link rel="shortcut icon" href="https://ftp.bmp.ovh/imgs/2021/12/e9387420470e9418.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/docker%E9%83%A8%E7%BD%B2fastdfs/">
+                
+                    <img src="/post/docker.jpeg" loading="lazy" alt="Featured image of post Docker部署FastDFS" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/docker/" >
+                Docker
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/docker%E9%83%A8%E7%BD%B2fastdfs/">Docker部署FastDFS</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 13, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 2 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="docker-部署-fastdfs">Docker 部署 FastDFS</h2>
+<h3 id="一docker-拉取-fastdfs-镜像">一、docker 拉取 FastDFS 镜像</h3>
+<blockquote>
+<pre tabindex="0"><code>docker pull season/fastdfs:1.2
+</code></pre></blockquote>
+<blockquote>
+<p><figure 
+	>
+	<a href="/post/dockerInatallFastDFS/1638959774996.png" >
+		<img src="/post/dockerInatallFastDFS/1638959774996.png"
+			
+			
+			
+			loading="lazy"
+			alt="docker cmd">
+	</a>
+	
+	<figcaption>docker cmd</figcaption>
+	
+</figure></p>
+</blockquote>
+<h3 id="二运行tracker">二、运行Tracker</h3>
+<blockquote>
+<pre tabindex="0"><code>docker run -ti -d --name trakcer -v /opt/fastdfs/tracker_data:/fastdfs/tracker/data --net=host season/fastdfs:1.2 tracker
+</code></pre></blockquote>
+<h3 id="三运行-storage">三、运行 Storage</h3>
+<p><strong>注意替换{ipaddress}</strong></p>
+<blockquote>
+<pre tabindex="0"><code>docker run -ti -d --name storage -v /opt/fastdfs/storage_data:/fastdfs/storage/data -v /opt/fastdfs/store_path:/fastdfs/store_path --net=host -e TRACKER_SERVER:{ipaddress}:22122 season/fastdfs:1.2 storage
+</code></pre></blockquote>
+<h3 id="四修改-fastdfs-配置文件">四、修改 FastDFS 配置文件</h3>
+<blockquote>
+<p><em>启动完Tracker 和 Storage 后 接下来修改 默认的配置文件</em></p>
+</blockquote>
+<blockquote>
+</blockquote>
+<blockquote>
+<pre tabindex="0"><code>#首先将storage 容器里面的 /fdfs_conf/ 目录下所以配置文件使用docker cp 命令复制出来
+docker cp storage:/fdfs_conf/. /usr/local/fastdfs/conf
+
+#编辑 tracker.conf 文件，将bind_addr字段的值替换成本机的IP
+vim tracker.conf
+bind_addr=${ipaddress}
+#编辑 storage.conf 文件，将tracker_server字段的值替换成本机的IP
+vim storage.conf
+tracker_server=${ipaddress}:22122
+#编辑 client.conf 文件，将tracker_server字段的值替换成本机的IP
+vim client.conf
+tracker_server=${ipaddress}:22122
+ 
+#将修改完的配置文件cp回镜像中
+docker cp /usr/local/fastdfs/conf/. storage:/fdfs_conf
+ 
+#重启storage服务
+docker restart storage
+</code></pre></blockquote>
+<h3 id="五配置-nginx--ngx_fastdfs_module">五、配置 nginx &amp; ngx_fastdfs_module</h3>
+<blockquote>
+<ol>
+<li><em>创建一个 nginx.conf 文件 复制下面配置</em></li>
+</ol>
+</blockquote>
+<blockquote>
+<pre tabindex="0"><code>server {
+        listen       80;
+        server_name  cq.lizihao.ltd;
+     
+      location /lzh/data {
+      	alias /usr/share/nginx/html/Data;  
+      }
+      
+      location /ljf/CheshireMusic {
+	  try_files $uri $uri/ @router;
+         index  index.html index.htm;
+	     alias /usr/share/nginx/html/jinfa/CheshireMusic;
+      }
+
+      location = /50x.html   {
+           root   html;
+       }
+
+      location /group1/M00 {
+          #root  /fastdfs/store_path/data;
+          ngx_fastdfs_module;
+       }
+
+   }
+</code></pre></blockquote>
+<blockquote>
+<ol start="2">
+<li><em>编辑 之前 cp 出的 mod_fastdfs.conf 文件</em></li>
+</ol>
+</blockquote>
+<blockquote>
+<pre tabindex="0"><code>#添加这行配置
+url_have_group_name=true
+#在40行处 修改 tracker_server的IP地址
+</code></pre></blockquote>
+<blockquote>
+<p><figure 
+	>
+	<a href="/post/dockerInatallFastDFS/12342342343.png" >
+		<img src="/post/dockerInatallFastDFS/12342342343.png"
+			
+			
+			
+			loading="lazy"
+			alt="docker conf">
+	</a>
+	
+	<figcaption>docker conf</figcaption>
+	
+</figure></p>
+</blockquote>
+<h3 id="六启动-nginx">六、启动 Nginx</h3>
+<blockquote>
+<p>当中参数 -v 由于我本身nginx 部署有应用 所以要加入其它的数据卷</p>
+<pre tabindex="0"><code>docker run -id --name fastdfs_nginx --restart=always -v /opt/fastdfs/store_path:/fastdfs/store_path -v /root/nginx/conf/nginx.conf:/etc/nginx/conf/nginx.conf -v /root/fastdfs/conf/mod_fastdfs.conf:/etc/fdfs/mod_fastdfs.conf -v /root/nginx/logs:/var/log/nginx -v /root/nginx/html:/usr/share/nginx/html -p 8888:80 -e GROUP_NAME=group1 -e TRACKER_SERVER=81.71.103.97:22122 -e STORAGE_SERVER_PORT=23000 season/fastdfs:1.2 nginx
+</code></pre></blockquote>
+<h3 id="七配置或者关闭防火墙">七、配置或者关闭防火墙</h3>
+<blockquote>
+<p>配置防火墙</p>
+<pre tabindex="0"><code>firewall-cmd --zone=public --add-port=22122/tcp --permanent
+firewall-cmd --zone=public --add-port=8888/tcp --permanent
+firewall-cmd --zone=public --add-port=23000/tcp --permanent
+firewall-cmd --reload
+</code></pre><p>或者 关闭防火墙</p>
+<pre tabindex="0"><code>systemctl stop firewalld.service 
+</code></pre></blockquote>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/fastdfs/">FastDFS</a>
+        
+            <a href="/tags/docker/">Docker</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/docker%E7%9A%84%E4%BD%BF%E7%94%A8/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/post/docker.jpeg" loading="lazy" data-key="" data-hash="/post/docker.jpeg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Docker的使用</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="has-image">
+    <a href="/p/docker%E9%83%A8%E7%BD%B2springboot%E7%9A%84jar/">
+        
+        
+            <div class="article-image">
+                
+                    <img src="/post/spring_boot.jpg" loading="lazy" data-key="" data-hash="/post/spring_boot.jpg"/>
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Docker部署SpringBoot的jar</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+        <head>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+</head>
+<body>
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'jhGjsLDo1scgQSGt0yekudk1-gzGzoHsz',
+            appKey: 'X35d2pn5VbzXf0V022XMK0lF'
+        })
+    </script>
+</body>
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2021 thinkBig Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#docker-部署-fastdfs">Docker 部署 FastDFS</a>
+      <ol>
+        <li><a href="#一docker-拉取-fastdfs-镜像">一、docker 拉取 FastDFS 镜像</a></li>
+        <li><a href="#二运行tracker">二、运行Tracker</a></li>
+        <li><a href="#三运行-storage">三、运行 Storage</a></li>
+        <li><a href="#四修改-fastdfs-配置文件">四、修改 FastDFS 配置文件</a></li>
+        <li><a href="#五配置-nginx--ngx_fastdfs_module">五、配置 nginx &amp; ngx_fastdfs_module</a></li>
+        <li><a href="#六启动-nginx">六、启动 Nginx</a></li>
+        <li><a href="#七配置或者关闭防火墙">七、配置或者关闭防火墙</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
